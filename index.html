@@ -1,0 +1,1035 @@
+<!-- public/index.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SVG Facade Analysis Chatbot</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    body{font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,sans-serif;margin:0;padding:20px;background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);min-height:100vh}
+    .container{max-width:1400px;margin:0 auto;background:rgba(255,255,255,.95);border-radius:20px;padding:30px;box-shadow:0 20px 40px rgba(0,0,0,.1);backdrop-filter:blur(10px)}
+    .header{text-align:center;margin-bottom:30px}
+    .header h1{color:#2d3748;font-size:2.4rem;margin:0 0 10px;background:linear-gradient(45deg,#667eea,#764ba2);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    .header p{color:#718096;font-size:1.05rem;margin:0}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-bottom:30px}
+    .panel{background:#fff;border-radius:15px;padding:25px;box-shadow:0 10px 25px rgba(0,0,0,.1);border:1px solid #e2e8f0}
+    .panel h3{color:#2d3748;margin:0 0 14px;font-size:1.15rem;display:flex;align-items:center}
+    .panel h3::before{content:"🏢";margin-right:10px}
+    .upload{border:2px dashed #cbd5e0;border-radius:10px;padding:30px 16px;text-align:center;transition:all .3s ease;cursor:pointer;background:#f7fafc}
+    .upload:hover{border-color:#667eea;background:#edf2f7}
+    .upload input{display:none}
+    .svgbox{width:100%;height:320px;border:1px solid #e2e8f0;border-radius:10px;display:flex;align-items:center;justify-content:center;background:#f7fafc;margin-bottom:14px}
+    .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+    .btn{padding:10px 18px;background:linear-gradient(45deg,#667eea,#764ba2);color:#fff;border:none;border-radius:10px;cursor:pointer;font-weight:600}
+    .btn.secondary{background:#2d3748}
+    .meta{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+    .metric{background:#f7fafc;border:1px solid #e2e8f0;border-radius:10px;padding:10px 12px}
+    .metric .label{color:#718096;font-size:.9rem}
+    .metric .value{color:#2d3748;font-weight:700;font-size:1.1rem}
+    .status{padding:10px 15px;border-radius:8px;margin:12px 0;font-weight:500}
+    .status.success{background:#c6f6d5;color:#22543d;border:1px solid #9ae6b4}
+    .status.error{background:#fed7d7;color:#822727;border:1px solid #feb2b2}
+    .chat{background:#fff;border-radius:15px;padding:25px;box-shadow:0 10px 25px rgba(0,0,0,.1);border:1px solid #e2e8f0}
+    .messages{height:380px;overflow-y:auto;border:1px solid #e2e8f0;border-radius:10px;padding:12px;background:#f7fafc;margin-bottom:12px}
+    .message{margin-bottom:12px;padding:10px 12px;border-radius:10px;max-width:80%}
+    .user{background:linear-gradient(45deg,#667eea,#764ba2);color:#fff;margin-left:auto}
+    .bot{background:#fff;border:1px solid #e2e8f0;color:#2d3748}
+    .input{display:flex;gap:10px}
+    .text{flex:1;padding:12px 16px;border:1px solid #e2e8f0;border-radius:10px;font-size:16px;outline:none}
+    select,input[type="text"]{padding:10px 12px;border-radius:10px;border:1px solid #e2e8f0}
+
+    /* Recommendations container */
+    #recsWrap {
+      margin-top: 20px;
+      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+      border-radius: 12px;
+      padding: 20px;
+      border: 1px solid #cbd5e0;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    #recsWrap h4 {
+      color: #2d3748;
+      font-size: 1.1rem;
+      margin: 0 0 16px 0;
+      display: flex;
+      align-items: center;
+      font-weight: 600;
+    }
+
+    #recsWrap h4::before {
+      content: "💡";
+      margin-right: 8px;
+      font-size: 1.2rem;
+    }
+
+    /* Recommendation cards */
+    .rec-card {
+      background: #ffffff;
+      border-radius: 10px;
+      padding: 16px;
+      margin-bottom: 12px;
+      border-left: 4px solid #667eea;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+      transition: all 0.2s ease;
+    }
+
+    .rec-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
+    }
+
+    .rec-card:last-child {
+      margin-bottom: 0;
+    }
+
+    .rec-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .rec-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-right: 12px;
+      font-size: 16px;
+      font-weight: bold;
+      color: white;
+    }
+
+    .rec-icon.daylight { background: linear-gradient(45deg, #fbbf24, #f59e0b); }
+    .rec-icon.rhythm { background: linear-gradient(45deg, #8b5cf6, #7c3aed); }
+    .rec-icon.comfort { background: linear-gradient(45deg, #10b981, #059669); }
+
+    .rec-title {
+      font-weight: 600;
+      color: #1a202c;
+      font-size: 1rem;
+    }
+
+    .rec-content {
+      color: #4a5568;
+      line-height: 1.5;
+      font-size: 0.95rem;
+    }
+
+    .rec-tag {
+      display: inline-block;
+      background: rgba(102, 126, 234, 0.1);
+      color: #667eea;
+      padding: 2px 8px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      margin-top: 8px;
+    }
+
+    /* No recommendations state */
+    .no-recs {
+      text-align: center;
+      padding: 20px;
+      color: #718096;
+      font-style: italic;
+    }
+
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1>🏢 SVG Facade Analysis Chatbot</h1>
+      <p>Upload a black/white mask (black = windows/holes). It's repaired & analyzed automatically. Edit via AI; if no SVG is returned, a local fallback applies your change.</p>
+    </div>
+
+    <div class="grid">
+      <div class="panel">
+        <h3>Upload & Preview</h3>
+        <div class="upload" onclick="document.getElementById('svgFile').click()">
+          <input type="file" id="svgFile" accept=".svg" onchange="onFile(event)"/>
+          <div>Click to upload SVG mask</div>
+          <small style="color:#718096">Black → windows • White → facade</small>
+        </div>
+        <div class="svgbox" id="svgBox"><em style="color:#a0aec0;">Your SVG will appear here</em></div>
+        <div class="row">
+          <button class="btn" id="analyzeBtn" disabled onclick="analyzeAndShow()">📊 Analyze</button>
+          <button class="btn secondary" id="downloadBtn" disabled onclick="downloadSVG()">💾 Download</button>
+        </div>
+        <div class="meta" style="margin-top:10px;">
+          <div class="metric"><div class="label">Window Area %</div><div class="value" id="pctVal">—</div></div>
+          <div class="metric"><div class="label">Resolution (analysis)</div><div class="value" id="resVal">—</div></div>
+        </div>
+        <div id="status"></div>
+      </div>
+
+      <div class="panel">
+        <h3>Current Analysis</h3>
+        <div id="analysis" style="color:#718096;padding:20px;text-align:center;border-radius:10px;background:#f7fafc;">
+          Upload an SVG to analyze window % or ask the AI to modify it.
+        </div>
+        <div id="recsWrap" style="margin-top:14px; display:none;">
+          <h4 style="color:#2d3748;">💡 Recommendations:</h4>
+          <div id="recs"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>⚙️ AI Configuration</h3>
+      <div class="row">
+        <select id="provider" style="width:300px">
+          <!-- <option value="auto" selected>Auto (OpenAI→Ollama)</option> -->
+          <option value="openai">OpenAI</option>
+          <!-- <option value="ollama">Ollama</option> -->
+        </select>
+        <input type="text" id="model" value="gpt-4o" style="width:300px"/>
+        <button class="btn" onclick="testConn()" id="testBtn">Test</button>
+        <div id="conn" style="margin-left:8px;"></div>
+      </div>
+      <!-- <div class="status" id="serverInfo" style="display:none"></div> -->
+    </div>
+
+    <div class="chat">
+      <h3 style="color:#2d3748;margin-bottom:12px;">💬 Chat with AI to Edit the SVG</h3>
+      <div class="messages" id="msgs">
+        <div class="message bot"><strong>AI Assistant:</strong> Try: "make windows 20% taller", "make all windows round/square", "add 2 rows", "increase window area by 5%".</div>
+      </div>
+      <div class="input">
+        <input class="text" id="ask" placeholder="Describe the change (e.g., make all windows square)" onkeypress="enterSend(event)"/>
+        <button class="btn" onclick="send()">Send</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+      // ===== Globals =====
+      let svgText = '';
+      const ANALYSIS_LONG_SIDE = 768;
+
+      class Client {
+        async chat(messages, temperature = 0.2) {
+          const res = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              model: "gpt-4o",
+              messages,
+              temperature,
+              max_tokens: 10000
+            })
+          });
+          if (!res.ok) throw new Error(await res.text());
+          const data = await res.json();
+          return data.choices?.[0]?.message?.content || '';
+        }
+      }
+      const llm = new Client();
+
+      // Enhanced SVG editing functions for your chatbot
+      class EnhancedSVGEditor {
+        constructor(llmClient) {
+          this.llm = llmClient;
+        }
+
+        // Enhanced LLM editing with better prompts and validation
+        async editWithLLM(svgText, instruction) {
+          const systemPrompt = `You are an expert SVG editor specializing in architectural facade masks.
+
+      CRITICAL RULES:
+      1. Return ONLY valid SVG code - no explanations, no markdown
+      2. Preserve exact viewBox, width, height attributes
+      3. Background MUST be white (#ffffff)
+      4. Windows/holes MUST be solid black (#000000) fills
+      5. Use only basic shapes: rect, circle, ellipse, path, polygon
+      6. No CSS classes, external references, filters, or gradients
+      7. Ensure all shapes have explicit fill attributes
+
+      SHAPE EDITING GUIDELINES:
+      - For "round windows": Convert rectangles to circles with appropriate radius
+      - For "square windows": Convert circles/ellipses to rectangles
+      - For size changes: Maintain center points while scaling dimensions
+      - For adding elements: Follow existing patterns and spacing
+      - For color changes: Only use #000000 (black) and #ffffff (white)
+
+      OUTPUT FORMAT: Start with <svg and end with </svg>`;
+
+          const userPrompts = [
+            {
+              role: 'system',
+              content: systemPrompt
+            },
+            {
+              role: 'user',
+              content: `Current SVG to edit:\n\`\`\`svg\n${svgText}\n\`\`\``
+            },
+            {
+              role: 'user',
+              content: `Apply this modification: ${instruction}\n\nReturn the complete modified SVG code.`
+            }
+          ];
+
+          try {
+            const response = await this.llm.chat(userPrompts, 0.1);
+            return this.extractAndValidateSVG(response);
+          } catch (error) {
+            console.error('LLM editing failed:', error);
+            return null;
+          }
+        }
+
+        // Improved SVG extraction with validation
+        extractAndValidateSVG(text) {
+          text = text.replace(/```(?:svg)?\s*([\s\S]*?)\s*```/gi, (_, inner) => inner.trim());
+          text = text.replace(/^\s*<\?xml[\s\S]*?\?>/i, '').replace(/<!DOCTYPE[\s\S]*?>/i, '').trim();
+          
+          const svgMatch = text.match(/<svg[\s\S]*?<\/svg>/i);
+          if (!svgMatch) return null;
+          
+          const svgCode = svgMatch[0];
+          
+          if (this.validateSVG(svgCode)) {
+            return svgCode;
+          }
+          
+          return null;
+        }
+
+        // SVG validation
+        validateSVG(svgCode) {
+          try {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(svgCode, 'image/svg+xml');
+            const svg = doc.querySelector('svg');
+            
+            if (!svg) return false;
+            
+            const parseError = doc.querySelector('parsererror');
+            if (parseError) return false;
+            
+            const hasViewBox = svg.hasAttribute('viewBox') || svg.hasAttribute('width');
+            return hasViewBox;
+            
+          } catch (error) {
+            return false;
+          }
+        }
+
+        // Advanced editing with multi-step approach
+        async editWithSteps(svgText, instruction) {
+          const analysisPrompt = {
+            role: 'system',
+            content: `Analyze this SVG editing request and break it down into specific steps:
+                    - Identify target elements
+                    - Determine transformation type
+                    - List specific changes needed
+
+                    Be concise and technical.`
+          };
+
+          try {
+            const analysis = await this.llm.chat([
+              analysisPrompt,
+              { role: 'user', content: `SVG: ${svgText}\n\nRequest: ${instruction}` }
+            ], 0.3);
+
+            const editResult = await this.editWithLLM(svgText, `${instruction}\n\nPlan: ${analysis}`);
+            return editResult;
+          } catch (error) {
+            return this.editWithLLM(svgText, instruction);
+          }
+        }
+
+        // Smart editing that chooses between LLM and local methods
+        async smartEdit(svgText, instruction) {
+          const lowerInstruction = instruction.toLowerCase();
+          
+          const simpleOperations = [
+            /make.*windows.*round/,
+            /make.*windows.*square/,
+            /(\d+)\s*%.*taller/,
+            /(\d+)\s*%.*wider/,
+            /add.*(\d+).*row/,
+            /add.*(\d+).*col/
+          ];
+
+          const isSimple = simpleOperations.some(pattern => pattern.test(lowerInstruction));
+          
+          if (isSimple) {
+            const llmResult = await this.editWithLLM(svgText, instruction);
+            return llmResult;
+          } else {
+            return this.editWithSteps(svgText, instruction);
+          }
+        }
+      }
+
+      function toast(msg, type='success'){
+        const div = document.createElement('div');
+        div.className = `status ${type}`; div.textContent = msg;
+        div.style.position='fixed'; div.style.top='20px'; div.style.right='20px'; div.style.zIndex='1000';
+        document.body.appendChild(div); setTimeout(()=>div.remove(), 2200);
+      }
+      function addMsg(text, who='bot'){
+        const box = document.getElementById('msgs');
+        const m = document.createElement('div');
+        m.className = `message ${who==='user'?'user':'bot'}`;
+        m.innerHTML = `<strong>${who==='user'?'You':'AI Assistant'}:</strong> ${text}`;
+        box.appendChild(m); box.scrollTop = box.scrollHeight;
+      }
+
+    // ===== Upload → auto-repair → render → auto-analyze =====
+    async function onFile(e){
+      const f = e.target.files[0];
+      if(!f || f.type !== 'image/svg+xml'){ toast('Please upload a valid .svg', 'error'); return; }
+      const r = new FileReader();
+      r.onload = async ev => {
+        svgText = ev.target.result;
+        svgText = await sanitizeMaskSVG_async(svgText);
+        svgText = await maybeInvertIfWrong(svgText);
+        render(svgText);
+        enableControls(true);
+        const { pct, resW, resH } = await analyzeMask(svgText, ANALYSIS_LONG_SIDE);
+        document.getElementById('pctVal').textContent = pct.toFixed(2)+'%';
+        document.getElementById('resVal').textContent = `${resW}×${resH}`;
+        document.getElementById('analysis').innerHTML =
+          `Black (window/hole) area is <b>${pct.toFixed(2)}%</b> of the facade mask.`;
+        toast('SVG uploaded & repaired', 'success');
+      };
+      r.readAsText(f);
+    }
+
+    function render(svg){
+      const box = document.getElementById('svgBox');
+      box.innerHTML = svg;
+      const el = box.querySelector('svg');
+      if(el){ el.style.width='100%'; el.style.height='100%'; el.style.maxHeight='300px'; el.setAttribute('preserveAspectRatio','xMidYMid meet'); }
+    }
+    function enableControls(on){
+      document.getElementById('analyzeBtn').disabled = !on;
+      document.getElementById('downloadBtn').disabled = !on;
+    }
+
+    // ===== Analyze % black (preserve aspect) =====
+    async function analyzeAndShow(){
+      if(!svgText) return;
+      svgText = await sanitizeMaskSVG_async(svgText);
+      svgText = await maybeInvertIfWrong(svgText);
+      render(svgText);
+
+      const { pct, resW, resH } = await analyzeMask(svgText, ANALYSIS_LONG_SIDE);
+      document.getElementById('pctVal').textContent = pct.toFixed(2)+'%';
+      document.getElementById('resVal').textContent = `${resW}×${resH}`;
+      document.getElementById('analysis').innerHTML = `Black (window/hole) area is <b>${pct.toFixed(2)}%</b> of the facade mask.`;
+
+      try{
+        const rec = await llm.chat([
+          { role:'system', content:'You are an architect. Provide 3 concise bullet points about daylight ratio, facade rhythm, and thermal comfort. ≤80 words total. Use bullet points starting with -.' },
+          { role:'user', content:`Window-to-wall ratio (black) is ${pct.toFixed(2)}%. Suggest improvements.` }
+        ]);
+        
+        // 🟢 USE THE NEW DISPLAY FUNCTION:
+        displayRecommendations(rec);
+        
+      } catch {
+        document.getElementById('recsWrap').style.display = 'none';
+      }
+    }
+
+    async function analyzeMask(svg, longSide=768){
+      const { svgText: fixed, w, h } = await normalizeSvgSize(svg);
+      let cw, ch;
+      if (w >= h) { cw = longSide; ch = Math.max(1, Math.round(longSide * (h / w))); }
+      else        { ch = longSide; cw = Math.max(1, Math.round(longSide * (w / h))); }
+
+      const img = await svgToImg(fixed);
+      await img.decode?.().catch(()=>{});
+      const { canvas, ctx } = makeCanvas(cw, ch);
+      ctx.drawImage(img,0,0,cw,ch);
+
+      const data = ctx.getImageData(0,0,cw,ch).data;
+      let black=0,total=0;
+      for(let i=0;i<data.length;i+=4){
+        const r=data[i], g=data[i+1], b=data[i+2], a=data[i+3];
+        if(a<10) continue;
+        total++;
+        const lum = 0.2126*r + 0.7152*g + 0.0722*b;
+        if(lum < 40) black++;
+      }
+      return { pct: total ? (black/total)*100 : 0, resW: cw, resH: ch };
+    }
+    function svgToImg(txt){
+      return new Promise((resolve,reject)=>{
+        const img = new Image();
+        const url = URL.createObjectURL(new Blob([txt], {type:'image/svg+xml'}));
+        img.onload=()=>{ URL.revokeObjectURL(url); resolve(img); };
+        img.onerror=reject; img.src=url;
+      });
+    }
+    function makeCanvas(w,h){ const c=document.createElement('canvas'); c.width=w; c.height=h; return { canvas:c, ctx:c.getContext('2d') }; }
+
+    function displayRecommendations(recommendationText) {
+        const recsWrap = document.getElementById('recsWrap');
+        const recsContainer = document.getElementById('recs');
+        
+        if (!recommendationText || recommendationText.trim() === '') {
+          recsWrap.style.display = 'none';
+          return;
+        }
+
+        const recommendations = parseRecommendations(recommendationText);
+        
+        if (recommendations.length === 0) {
+          recsContainer.innerHTML = '<div class="no-recs">No specific recommendations available.</div>';
+        } else {
+          recsContainer.innerHTML = recommendations.map(rec => `
+            <div class="rec-card">
+              <div class="rec-header">
+                <div class="rec-icon ${rec.type}">
+                  ${rec.icon}
+                </div>
+                <div class="rec-title">${rec.title}</div>
+              </div>
+              <div class="rec-content">${rec.content}</div>
+              ${rec.tag ? `<div class="rec-tag">${rec.tag}</div>` : ''}
+            </div>
+          `).join('');
+        }
+        
+        recsWrap.style.display = 'block';
+      }
+
+      function parseRecommendations(text) {
+        const recommendations = [];
+        
+        const lines = text.split(/[-•*]\s*/).filter(line => line.trim().length > 0);
+        
+        lines.forEach(line => {
+          const cleaned = line.trim().replace(/\*\*/g, '');
+          
+          if (cleaned.toLowerCase().includes('daylight') || cleaned.toLowerCase().includes('light')) {
+            recommendations.push({
+              type: 'daylight',
+              icon: '☀️',
+              title: 'Daylight Optimization',
+              content: cleaned,
+              tag: 'Energy Efficiency'
+            });
+          } else if (cleaned.toLowerCase().includes('rhythm') || cleaned.toLowerCase().includes('pattern')) {
+            recommendations.push({
+              type: 'rhythm',
+              icon: '📐',
+              title: 'Facade Rhythm',
+              content: cleaned,
+              tag: 'Visual Appeal'
+            });
+          } else if (cleaned.toLowerCase().includes('comfort') || cleaned.toLowerCase().includes('thermal')) {
+            recommendations.push({
+              type: 'comfort',
+              icon: '🌡️',
+              title: 'Thermal Comfort',
+              content: cleaned,
+              tag: 'User Comfort'
+            });
+          } else if (cleaned.length > 20) {
+            recommendations.push({
+              type: 'comfort',
+              icon: '💭',
+              title: 'General Advice',
+              content: cleaned,
+              tag: 'Architecture'
+            });
+          }
+        });
+        
+        return recommendations;
+      }
+
+    // ===== Chat → try LLM → else Local Fallback Editor =====
+    async function send(){
+      const input = document.getElementById('ask');
+      const msg = input.value.trim();
+      if(!msg) return;
+      addMsg(msg, 'user'); input.value='';
+
+      if(!svgText){
+        try{ addMsg(await llm.chat([{role:'user', content:msg}])); }catch{ addMsg('Error contacting AI.','bot'); }
+        return;
+      }
+
+      // 🟢 USE ENHANCED EDITOR HERE:
+      const editor = new EnhancedSVGEditor(llm);
+      
+      try {
+        const result = await editor.smartEdit(svgText, msg);
+        
+        if (result) {
+          svgText = await sanitizeMaskSVG_async(result);
+          svgText = await maybeInvertIfWrong(svgText);
+          render(svgText);
+          
+          const { pct } = await analyzeMask(svgText, ANALYSIS_LONG_SIDE);
+          document.getElementById('pctVal').textContent = pct.toFixed(2) + '%';
+          addMsg(`✅ Applied successfully! Current window area: ${pct.toFixed(2)}%`);
+          
+        } else {
+          // Fallback to existing local editor
+          svgText = await localFallbackEdit(svgText, msg);
+          svgText = await sanitizeMaskSVG_async(svgText);
+          svgText = await maybeInvertIfWrong(svgText);
+          render(svgText);
+          
+          const { pct } = await analyzeMask(svgText, ANALYSIS_LONG_SIDE);
+          document.getElementById('pctVal').textContent = pct.toFixed(2) + '%';
+          addMsg('Applied locally. Current window area: '+pct.toFixed(2)+'%.');
+        }
+        
+      } catch (error) {
+        console.error('Edit failed:', error);
+        addMsg('Could not apply the edit. Please try rephrasing your request.', 'bot');
+      }
+    }
+    // ===== Local Fallback Editor =====
+    async function localFallbackEdit(txt, instruction){
+      const s = instruction.toLowerCase();
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(txt, 'image/svg+xml');
+      const svg = doc.querySelector('svg');
+      if(!svg) throw new Error('Invalid SVG');
+
+      const geomTags = ['rect','circle','ellipse','path','polygon','polyline'];
+      const blackShapes = Array.from(svg.querySelectorAll(geomTags.join(','))).filter(el=>{
+        const { fill, opacity } = effectiveFillAndOpacity(el);
+        const f = (fill||'').toLowerCase();
+        return opacity>0.02 && (f==='#000000' || f==='black');
+      });
+
+      const num = (re) => {
+        const m = s.match(re);
+        if(!m) return null;
+        const val = parseFloat(m[1]);
+        return Number.isFinite(val) ? val : null;
+      };
+
+      // round windows
+      if(/make .*windows? .*round/.test(s) || /round windows/.test(s)){
+        for(const el of blackShapes){
+          const tag = el.tagName.toLowerCase();
+          if(tag==='rect'){
+            const x=+el.getAttribute('x')||0, y=+el.getAttribute('y')||0;
+            const w=+el.getAttribute('width')||0, h=+el.getAttribute('height')||0;
+            const cx = x + w/2, cy = y + h/2, r = Math.max(1, Math.min(w,h)/2);
+            const c = doc.createElementNS('http://www.w3.org/2000/svg','circle');
+            c.setAttribute('cx', cx); c.setAttribute('cy', cy); c.setAttribute('r', r);
+            c.setAttribute('fill', '#000000');
+            el.replaceWith(c);
+          }else if(tag==='ellipse'){
+            const rx = +el.getAttribute('rx')||0;
+            const ry = +el.getAttribute('ry')||0;
+            const r = Math.max(1, Math.min(rx, ry));
+            el.setAttribute('rx', r); el.setAttribute('ry', r);
+          }
+        }
+        return new XMLSerializer().serializeToString(doc);
+      }
+
+      // square windows - FIXED VERSION
+      if(/make .*windows? .*square/.test(s) || /square windows/.test(s)){
+        for(const el of blackShapes){
+          const tag = el.tagName.toLowerCase();
+          if(tag==='circle'){
+            const cx=+el.getAttribute('cx')||0, cy=+el.getAttribute('cy')||0;
+            const r=+el.getAttribute('r')||0;
+            const size = Math.max(1, r*2);
+            const rect = doc.createElementNS('http://www.w3.org/2000/svg','rect');
+            rect.setAttribute('x', cx - size/2);
+            rect.setAttribute('y', cy - size/2);
+            rect.setAttribute('width', size);
+            rect.setAttribute('height', size);
+            rect.setAttribute('fill', '#000000');
+            el.replaceWith(rect);
+          }else if(tag==='ellipse'){
+            const cx=+el.getAttribute('cx')||0, cy=+el.getAttribute('cy')||0;
+            const rx=+el.getAttribute('rx')||0, ry=+el.getAttribute('ry')||0;
+            // Use the average of rx and ry for square size, multiply by 2 for diameter
+            const avgRadius = (rx + ry) / 2;
+            const size = Math.max(1, avgRadius * 2);
+            const rect = doc.createElementNS('http://www.w3.org/2000/svg','rect');
+            rect.setAttribute('x', cx - size/2);
+            rect.setAttribute('y', cy - size/2);
+            rect.setAttribute('width', size);
+            rect.setAttribute('height', size);
+            rect.setAttribute('fill', '#000000');
+            el.replaceWith(rect);
+          }else if(tag==='rect'){
+            const x=+el.getAttribute('x')||0, y=+el.getAttribute('y')||0;
+            const w=+el.getAttribute('width')||0, h=+el.getAttribute('height')||0;
+            // Use the average of width and height for square size
+            const size = Math.max(1, (w + h) / 2);
+            const centerX = x + w/2;
+            const centerY = y + h/2;
+            el.setAttribute('x', centerX - size/2);
+            el.setAttribute('y', centerY - size/2);
+            el.setAttribute('width', size);
+            el.setAttribute('height', size);
+            el.removeAttribute('rx');
+            el.removeAttribute('ry');
+          }
+        }
+        return new XMLSerializer().serializeToString(doc);
+      }
+
+      // percentage transforms
+      let p = num(/(\d+(?:\.\d+)?)\s*%/);
+      if(p!=null){
+        if(/taller/.test(s) || /height/.test(s)){
+          const factor = /shorter/.test(s) ? (1 - p/100) : (1 + p/100);
+          for(const el of blackShapes){
+            const tag = el.tagName.toLowerCase();
+            if(tag==='rect'){
+              const y=+el.getAttribute('y')||0, h=+el.getAttribute('height')||0;
+              const nh = Math.max(1, h*factor);
+              el.setAttribute('y', y + (h-nh)/2);
+              el.setAttribute('height', nh);
+            }else if(tag==='ellipse'){
+              const ry=+el.getAttribute('ry')||0;
+              el.setAttribute('ry', Math.max(1, ry*factor));
+            }else if(tag==='circle'){
+              const r=+el.getAttribute('r')||0;
+              el.setAttribute('r', Math.max(1, r*factor));
+            }
+          }
+          return new XMLSerializer().serializeToString(doc);
+        }
+        if(/wider/.test(s) || /narrower/.test(s) || /width/.test(s)){
+          const factor = /narrower/.test(s) ? (1 - p/100) : (1 + p/100);
+          for(const el of blackShapes){
+            const tag = el.tagName.toLowerCase();
+            if(tag==='rect'){
+              const x=+el.getAttribute('x')||0, w=+el.getAttribute('width')||0;
+              const nw = Math.max(1, w*factor);
+              el.setAttribute('x', x + (w-nw)/2);
+              el.setAttribute('width', nw);
+            }else if(tag==='ellipse'){
+              const rx=+el.getAttribute('rx')||0;
+              el.setAttribute('rx', Math.max(1, rx*factor));
+            }else if(tag==='circle'){
+              const r=+el.getAttribute('r')||0;
+              el.setAttribute('r', Math.max(1, r*factor));
+            }
+          }
+          return new XMLSerializer().serializeToString(doc);
+        }
+      }
+
+      // increase window area by N%
+      if(/increase .*window .*area .*by .*%/.test(s) && p!=null){
+        const factor = 1 + p/100;
+        const scaleFactor = Math.sqrt(factor);
+        for(const el of blackShapes){
+          const tag = el.tagName.toLowerCase();
+          if(tag==='rect'){
+            const x=+el.getAttribute('x')||0, y=+el.getAttribute('y')||0;
+            const w=+el.getAttribute('width')||0, h=+el.getAttribute('height')||0;
+            const centerX = x + w/2, centerY = y + h/2;
+            const nw=Math.max(1,w*scaleFactor), nh=Math.max(1,h*scaleFactor);
+            el.setAttribute('x', centerX - nw/2); 
+            el.setAttribute('y', centerY - nh/2);
+            el.setAttribute('width', nw); 
+            el.setAttribute('height', nh);
+          }else if(tag==='circle'){
+            const r=+el.getAttribute('r')||0;
+            el.setAttribute('r', Math.max(1, r*scaleFactor));
+          }else if(tag==='ellipse'){
+            const rx=+el.getAttribute('rx')||0, ry=+el.getAttribute('ry')||0;
+            el.setAttribute('rx', Math.max(1, rx*scaleFactor));
+            el.setAttribute('ry', Math.max(1, ry*scaleFactor));
+          }
+        }
+        return new XMLSerializer().serializeToString(doc);
+      }
+
+      // add rows / columns
+      const nRows = num(/add\s+(\d+)\s+rows?/);
+      const nCols = num(/add\s+(\d+)\s+cols?|add\s+(\d+)\s+columns?/);
+      if(nRows || nCols){
+        const centers = blackShapes.map(el=>{
+          const t=el.tagName.toLowerCase();
+          if(t==='rect'){
+            const x=+el.getAttribute('x')||0, y=+el.getAttribute('y')||0;
+            const w=+el.getAttribute('width')||0, h=+el.getAttribute('height')||0;
+            return {cx:x+w/2, cy:y+h/2};
+          }else if(t==='circle' || t==='ellipse'){
+            return {cx:+el.getAttribute('cx')||0, cy:+el.getAttribute('cy')||0};
+          }
+          return null;
+        }).filter(Boolean);
+        if(centers.length>=2){
+          centers.sort((a,b)=>a.cy-b.cy||a.cx-b.cx);
+          const dxs=[], dys=[];
+          for(let i=1;i<centers.length;i++){
+            dxs.push(Math.abs(centers[i].cx-centers[i-1].cx));
+            dys.push(Math.abs(centers[i].cy-centers[i-1].cy));
+          }
+          dxs.sort((a,b)=>a-b); dys.sort((a,b)=>a-b);
+          const dx = dxs[Math.floor(dxs.length/2)] || 40;
+          const dy = dys[Math.floor(dys.length/2)] || 40;
+
+          // Create array of all existing shapes to duplicate
+          const shapesToDuplicate = [...blackShapes];
+
+          if(nRows){
+            for(let r=1;r<=nRows;r++){
+              for(const el of shapesToDuplicate){
+                const clone = el.cloneNode(true);
+                shiftElement(clone, 0, r*dy);
+                svg.appendChild(clone);
+              }
+            }
+          }
+          if(nCols){
+            for(let c=1;c<=nCols;c++){
+              for(const el of shapesToDuplicate){
+                const clone = el.cloneNode(true);
+                shiftElement(clone, c*dx, 0);
+                svg.appendChild(clone);
+              }
+            }
+          }
+          return new XMLSerializer().serializeToString(doc);
+        }
+      }
+
+      throw new Error('No local rule matched');
+    }
+
+    function shiftElement(el, dx, dy){
+      const t = el.tagName.toLowerCase();
+      if(t==='rect'){
+        el.setAttribute('x', (+el.getAttribute('x')||0)+dx);
+        el.setAttribute('y', (+el.getAttribute('y')||0)+dy);
+      }else if(t==='circle'){
+        el.setAttribute('cx', (+el.getAttribute('cx')||0)+dx);
+        el.setAttribute('cy', (+el.getAttribute('cy')||0)+dy);
+      }else if(t==='ellipse'){
+        el.setAttribute('cx', (+el.getAttribute('cx')||0)+dx);
+        el.setAttribute('cy', (+el.getAttribute('cy')||0)+dy);
+      }else if(t==='polygon' || t==='polyline'){
+        const pts = (el.getAttribute('points')||'').trim().split(/\s+/).map(p=>{
+          const [x,y]=p.split(',').map(Number); return `${x+dx},${y+dy}`;
+        }).join(' ');
+        el.setAttribute('points', pts);
+      }else if(t==='path'){
+        const d = (el.getAttribute('d')||'').replace(/([MmLlHhVv])\s*([-0-9.,\s]+)/g,(m,cmd,vals)=>{
+          const nums = vals.trim().split(/[\s,]+/).map(Number);
+          if('MmLl'.includes(cmd)){
+            for(let i=0;i<nums.length;i+=2){ nums[i]+=dx; nums[i+1]+=dy; }
+            return cmd+' '+nums.join(' ');
+          }
+          if(cmd==='H'){ for(let i=0;i<nums.length;i++) nums[i]+=dx; return 'H '+nums.join(' '); }
+          if(cmd==='V'){ for(let i=0;i<nums.length;i++) nums[i]+=dy; return 'V '+nums.join(' '); }
+          return m;
+        });
+        el.setAttribute('d', d);
+      }
+    }
+
+    // ===== Size normalization =====
+    async function normalizeSvgSize(svgText) {
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(svgText, 'image/svg+xml');
+      const svg = doc.querySelector('svg');
+      if (!svg) return { svgText, w: 1024, h: 1024 };
+
+      const vbAttr = svg.getAttribute('viewBox');
+      if (vbAttr) {
+        const vb = vbAttr.trim().split(/\s+|,/).map(Number);
+        if (vb.length === 4 && vb.every(n => !Number.isNaN(n))) {
+          const [ , , vw, vh ] = vb;
+          if (!svg.getAttribute('width'))  svg.setAttribute('width', String(vw));
+          if (!svg.getAttribute('height')) svg.setAttribute('height', String(vh));
+          return { svgText: new XMLSerializer().serializeToString(doc), w: vw, h: vh };
+        }
+      }
+
+      const hidden = document.createElement('div');
+      hidden.style.cssText = 'position:fixed; left:-99999px; top:-99999px; opacity:0;';
+      document.body.appendChild(hidden);
+
+      const tmp = document.createElement('div');
+      tmp.innerHTML = new XMLSerializer().serializeToString(doc);
+      const tmpSvg = tmp.querySelector('svg');
+      hidden.appendChild(tmpSvg);
+
+      if (!tmpSvg.getAttribute('viewBox')) {
+        const wAttr = parseFloat((tmpSvg.getAttribute('width')||'').replace(/[a-z%]+$/i,''));
+        const hAttr = parseFloat((tmpSvg.getAttribute('height')||'').replace(/[a-z%]+$/i,''));
+        if (wAttr && hAttr) tmpSvg.setAttribute('viewBox', `0 0 ${wAttr} ${hAttr}`);
+        else tmpSvg.setAttribute('viewBox', '0 0 1000 1000');
+      }
+
+      let bbox;
+      try { bbox = tmpSvg.getBBox(); } catch { bbox = { x:0, y:0, width:1000, height:1000 }; }
+      const w = Math.max(1, Math.round(bbox.width));
+      const h = Math.max(1, Math.round(bbox.height));
+
+      svg.setAttribute('viewBox', `0 0 ${w} ${h}`);
+      svg.setAttribute('width',  String(w));
+      svg.setAttribute('height', String(h));
+
+      hidden.remove();
+
+      return { svgText: new XMLSerializer().serializeToString(doc), w, h };
+    }
+
+    // ===== Sanitizer & inversion with effective fill detection =====
+    function effectiveFillAndOpacity(el){
+      let node = el, fill = null, opacity = 1;
+      while(node && node.nodeType === 1){
+        const style = node.getAttribute('style')||'';
+        const sFill = style.match(/(^|;)\s*fill\s*:\s*([^;]+)/i)?.[2]?.trim();
+        const sOp   = style.match(/(^|;)\s*(?:fill-)?opacity\s*:\s*([^;]+)/i)?.[2]?.trim();
+        if(fill==null){
+          const f = node.getAttribute('fill');
+          if(f && f !== 'none') fill = f;
+          else if(sFill && sFill.toLowerCase() !== 'none') fill = sFill;
+        }
+        const fo = node.getAttribute('fill-opacity');
+        const op = node.getAttribute('opacity');
+        if(fo) opacity *= Number(fo);
+        if(op) opacity *= Number(op);
+        if(sOp) opacity *= Number(sOp);
+        node = node.parentElement;
+      }
+      if(fill){
+        const f = fill.trim().toLowerCase();
+        if(f==='black') fill = '#000000';
+        if(f==='white') fill = '#ffffff';
+      }
+      return { fill, opacity: Number.isFinite(opacity) ? opacity : 1 };
+    }
+
+    function ensureWhiteBG(doc, svg, w, h){
+      const bg = doc.createElementNS('http://www.w3.org/2000/svg','rect');
+      bg.setAttribute('x','0'); bg.setAttribute('y','0');
+      bg.setAttribute('width', String(w)); bg.setAttribute('height', String(h));
+      bg.setAttribute('fill','#ffffff'); bg.setAttribute('fill-opacity','1');
+      svg.insertBefore(bg, svg.firstChild);
+    }
+    function isFull(rw,rh,w,h){ return Math.abs(rw-w)<=0.5 && Math.abs(rh-h)<=0.5; }
+    function near(a,b,eps=0.5){ return Math.abs(a-b)<=eps; }
+
+    async function sanitizeMaskSVG_async(txt){
+      try{
+        const { svgText: sizedText, w, h } = await normalizeSvgSize(txt);
+        const doc = new DOMParser().parseFromString(sizedText, 'image/svg+xml');
+        const svg = doc.querySelector('svg'); if(!svg) return sizedText;
+
+        // kill CSS/defs/masks/filters/clips that can flip colors
+        doc.querySelectorAll('style, defs, mask, clipPath, filter, pattern').forEach(n=>n.remove());
+
+        // solid background
+        ensureWhiteBG(doc, svg, w, h);
+
+        // flip any full-canvas black rect to white
+        doc.querySelectorAll('rect').forEach(r=>{
+          const rw=+r.getAttribute('width')||0, rh=+r.getAttribute('height')||0;
+          const rx=+r.getAttribute('x')||0, ry=+r.getAttribute('y')||0;
+          const { fill, opacity } = effectiveFillAndOpacity(r);
+          const isBlack = (fill||'').toLowerCase() === '#000000' && opacity>0.02;
+          if(isFull(rw,rh,w,h) && near(rx,0) && near(ry,0) && isBlack){
+            r.setAttribute('fill','#ffffff'); r.setAttribute('fill-opacity','1');
+          }
+        });
+
+        // normalize geometry fills
+        const geomTags = ['rect','circle','ellipse','path','polygon','polyline'];
+        doc.querySelectorAll('*').forEach(el=>{
+          const tag = el.tagName.toLowerCase();
+          if(!geomTags.includes(tag)) return;
+          const eff = effectiveFillAndOpacity(el);
+          let f = eff.fill ? eff.fill.toLowerCase() : '';
+          const op = eff.opacity;
+
+          if(!f || f==='none' || op<=0.02){
+            el.setAttribute('fill','#ffffff'); el.setAttribute('fill-opacity','1');
+            el.removeAttribute('stroke');
+          }else{
+            if(f==='black') f='#000000';
+            if(f==='white') f='#ffffff';
+            el.setAttribute('fill', f); el.setAttribute('fill-opacity','1');
+          }
+        });
+
+        return new XMLSerializer().serializeToString(doc);
+      }catch{ return txt; }
+    }
+
+    async function maybeInvertIfWrong(txt){
+      try{
+        const { pct } = await analyzeMask(txt, 384);
+        if (pct > 95 || pct < 0.5) return invertMaskColors(txt);
+      }catch{}
+      return txt;
+    }
+
+    function invertMaskColors(txt){
+      try{
+        const doc = new DOMParser().parseFromString(txt, 'image/svg+xml');
+        doc.querySelectorAll('*').forEach(el=>{
+          const { fill } = effectiveFillAndOpacity(el);
+          const f=(fill||'').toLowerCase();
+          if(f==='#000000'){ el.setAttribute('fill','#ffffff'); el.setAttribute('fill-opacity','1'); }
+          else if(f==='#ffffff'){ el.setAttribute('fill','#000000'); el.setAttribute('fill-opacity','1'); }
+        });
+        return new XMLSerializer().serializeToString(doc);
+      }catch{
+        return txt
+          .replace(/#000000/gi,'#TMPWHITE').replace(/#000\b/gi,'#TMPWHITE').replace(/black/gi,'#TMPWHITE')
+          .replace(/#ffffff/gi,'#000000').replace(/#fff\b/gi,'#000000').replace(/white/gi,'#000000')
+          .replace(/#TMPWHITE/g,'#ffffff');
+      }
+    }
+
+    function extractSVG(text){
+      text = text.replace(/```(?:svg)?\s*([\s\S]*?)\s*```/gi, (_, inner) => inner.trim());
+      text = text.replace(/^\s*<\?xml[\s\S]*?\?>/i,'').replace(/<!DOCTYPE[\s\S]*?>/i,'').trim();
+      const m = text.match(/<svg[\s\S]*?<\/svg>/i);
+      return m ? m[0] : null;
+    }
+
+    // ===== Misc =====
+    async function testConn(){
+      const c = document.getElementById('conn'); c.textContent='Testing…';
+      try{ await llm.chat([{role:'user',content:'Ping.'}]); c.textContent='✅ OK'; c.className='status success'; }
+      catch{ c.textContent='❌ Failed'; c.className='status error'; }
+      setTimeout(()=>{ c.textContent=''; c.className=''; }, 3000);
+    }
+    function enterSend(e){ if(e.key==='Enter') send(); }
+    function downloadSVG(){
+      if(!svgText) return;
+      const blob = new Blob([svgText], {type:'image/svg+xml'});
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href=url; a.download='modified_facade.svg';
+      document.body.appendChild(a); a.click();
+      document.body.removeChild(a); URL.revokeObjectURL(url);
+      toast('SVG downloaded','success');
+    }
+
+    window.addEventListener('load', async ()=>{
+      try{
+        const r = await fetch('/health'); const info = await r.json();
+        const s = document.getElementById('serverInfo'); s.style.display='block';
+        s.textContent = `Server OK • OpenAI: ${info.hasOpenAI ? 'enabled' : 'disabled'} • Provider URLs: ${info.openaiURL ?? 'undefined'} / ${info.ollamaURL ?? 'undefined'}`;
+      }catch{}
+    });
+  </script>
+</body>
+</html>
