@@ -1,5 +1,3 @@
-<!-- public/index.html -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -40,106 +38,43 @@
     .bot{background:#fff;border:1px solid #e2e8f0;color:#2d3748}
     .input{display:flex;gap:10px}
     .text{flex:1;padding:12px 16px;border:1px solid #e2e8f0;border-radius:10px;font-size:16px;outline:none}
+    
     select,input[type="text"]{padding:10px 12px;border-radius:10px;border:1px solid #e2e8f0}
 
     /* Recommendations container */
-    #recsWrap {
-      margin-top: 20px;
-      background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
-      border-radius: 12px;
-      padding: 20px;
-      border: 1px solid #cbd5e0;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    }
+    #recsWrap {margin-top: 20px;background: #ffffff;border-radius: 14px;padding: 18px 18px 6px;border:1px solid #e6ebf3;box-shadow:0 6px 20px rgba(20,30,55,.06)}
+    #recsWrap .recs-head {display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+    #recsWrap .recs-title {display:flex;align-items:center;gap:8px;color:#1f2937;font-weight:700;font-size:1.05rem}
+    #recsWrap .recs-title .spark {width:26px;height:26px;border-radius:8px;background:linear-gradient(135deg,#667eea,#764ba2);display:flex;align-items:center;justify-content:center;color:#fff;box-shadow:0 6px 14px rgba(102,126,234,.35)}
+    #recsWrap .meta-badges {display:flex;gap:6px;flex-wrap:wrap}
+    .pill {background:#f1f5f9;border:1px solid #e5e7eb;color:#475569;font-weight:600;font-size:.75rem;padding:6px 10px;border-radius:999px}
 
-    #recsWrap h4 {
-      color: #2d3748;
-      font-size: 1.1rem;
-      margin: 0 0 16px 0;
-      display: flex;
-      align-items: center;
-      font-weight: 600;
-    }
 
-    #recsWrap h4::before {
-      content: "💡";
-      margin-right: 8px;
-      font-size: 1.2rem;
-    }
+    /* Group */
+    .rec-group {border:1px solid #edf2f7;border-radius:12px;padding:12px;margin:12px 0 14px}
+    .rec-group-head {display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+    .rec-group-title {display:flex;align-items:center;gap:10px;font-weight:700;color:#111827}
+    .rec-group-title .icon {width:32px;height:32px;border-radius:10px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px}
+    .icon.daylight{background:linear-gradient(45deg,#fbbf24,#f59e0b)}
+    .icon.rhythm{background:linear-gradient(45deg,#8b5cf6,#7c3aed)}
+    .icon.comfort{background:linear-gradient(45deg,#10b981,#059669)}
+    .icon.general{background:linear-gradient(45deg,#94a3b8,#64748b)}
+    .rec-count{color:#6b7280;font-weight:600}
 
-    /* Recommendation cards */
-    .rec-card {
-      background: #ffffff;
-      border-radius: 10px;
-      padding: 16px;
-      margin-bottom: 12px;
-      border-left: 4px solid #667eea;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-      transition: all 0.2s ease;
-    }
 
-    .rec-card:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 4px 16px rgba(0,0,0,0.12);
-    }
+    /* Cards grid inside groups */
+    .rec-grid {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    @media (max-width:900px){ .rec-grid{grid-template-columns:1fr} }
 
-    .rec-card:last-child {
-      margin-bottom: 0;
-    }
 
-    .rec-header {
-      display: flex;
-      align-items: center;
-      margin-bottom: 8px;
-    }
+    .rec-card {background:#fbfdff;border:1px solid #e6ebf3;border-radius:12px;padding:12px;transition:box-shadow .2s ease, transform .2s ease}
+    .rec-card:hover{box-shadow:0 8px 24px rgba(20,30,55,.08);transform:translateY(-1px)}
+    .rec-title {font-weight:600;color:#0f172a;font-size:.95rem;margin-bottom:6px}
+    .rec-content {color:#475569;line-height:1.5;font-size:.92rem}
+    .rec-tag {display:inline-block;margin-top:8px;font-size:.75rem;font-weight:600;color:#475569;background:#eef2ff;border:1px solid #dbe4ff;padding:4px 8px;border-radius:999px}
 
-    .rec-icon {
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      margin-right: 12px;
-      font-size: 16px;
-      font-weight: bold;
-      color: white;
-    }
 
-    .rec-icon.daylight { background: linear-gradient(45deg, #fbbf24, #f59e0b); }
-    .rec-icon.rhythm { background: linear-gradient(45deg, #8b5cf6, #7c3aed); }
-    .rec-icon.comfort { background: linear-gradient(45deg, #10b981, #059669); }
-
-    .rec-title {
-      font-weight: 600;
-      color: #1a202c;
-      font-size: 1rem;
-    }
-
-    .rec-content {
-      color: #4a5568;
-      line-height: 1.5;
-      font-size: 0.95rem;
-    }
-
-    .rec-tag {
-      display: inline-block;
-      background: rgba(102, 126, 234, 0.1);
-      color: #667eea;
-      padding: 2px 8px;
-      border-radius: 12px;
-      font-size: 0.8rem;
-      font-weight: 500;
-      margin-top: 8px;
-    }
-
-    /* No recommendations state */
-    .no-recs {
-      text-align: center;
-      padding: 20px;
-      color: #718096;
-      font-style: italic;
-    }
+    .no-recs {text-align:center;padding:16px 8px;color:#718096;font-style:italic}
 
   </style>
 </head>
@@ -147,7 +82,7 @@
   <div class="container">
     <div class="header">
       <h1>🏢 SVG Facade Analysis Chatbot</h1>
-      <p>Upload a black/white mask (black = windows/holes). It's repaired & analyzed automatically. Edit via AI; if no SVG is returned, a local fallback applies your change.</p>
+      <p>Upload a black/white or black/transparent SVG mask (black = windows/holes) of your facade. Edit & analyse it using via OpenAI model. Check if AI server works correctly using Test button.</p>
     </div>
 
     <div class="grid">
@@ -165,7 +100,7 @@
         </div>
         <div class="meta" style="margin-top:10px;">
           <div class="metric"><div class="label">Window Area %</div><div class="value" id="pctVal">—</div></div>
-          <div class="metric"><div class="label">Resolution (analysis)</div><div class="value" id="resVal">—</div></div>
+          <div class="metric"><div class="label">Aspect Ratio</div><div class="value" id="ratioVal">—</div></div>
         </div>
         <div id="status"></div>
       </div>
@@ -175,10 +110,19 @@
         <div id="analysis" style="color:#718096;padding:20px;text-align:center;border-radius:10px;background:#f7fafc;">
           Upload an SVG to analyze window % or ask the AI to modify it.
         </div>
+        
         <div id="recsWrap" style="margin-top:14px; display:none;">
-          <h4 style="color:#2d3748;">💡 Recommendations:</h4>
+          <div class="recs-head">
+            <div class="recs-title">
+              <span class="spark">💡</span> Recommendations
+            </div>
+            <div class="meta-badges" id="recsMeta"></div>
+          </div>
           <div id="recs"></div>
         </div>
+
+
+
       </div>
     </div>
 
@@ -234,7 +178,7 @@
       const llm = new Client();
 
       // Enhanced SVG editing functions for your chatbot
-      class EnhancedSVGEditor {
+      class SVGEditor {
         constructor(llmClient) {
           this.llm = llmClient;
         }
@@ -246,15 +190,15 @@
       CRITICAL RULES:
       1. Return ONLY valid SVG code - no explanations, no markdown
       2. Preserve exact viewBox, width, height attributes
-      3. Background MUST be white (#ffffff)
+      3. Background MUST be transparent
       4. Windows/holes MUST be solid black (#000000) fills
       5. Use only basic shapes: rect, circle, ellipse, path, polygon
       6. No CSS classes, external references, filters, or gradients
       7. Ensure all shapes have explicit fill attributes
 
       SHAPE EDITING GUIDELINES:
-      - For "round windows": Convert rectangles to circles with appropriate radius
-      - For "square windows": Convert circles/ellipses to rectangles
+      - For "round windows": Convert rectangles to circles with appropriate radius preserving initial center and size
+      - For "square windows": Convert circles/ellipses to rectangles preserving initial center and size
       - For size changes: Maintain center points while scaling dimensions
       - For adding elements: Follow existing patterns and spacing
       - For color changes: Only use #000000 (black) and #ffffff (white)
@@ -396,14 +340,21 @@
         svgText = await maybeInvertIfWrong(svgText);
         render(svgText);
         enableControls(true);
-        const { pct, resW, resH } = await analyzeMask(svgText, ANALYSIS_LONG_SIDE);
+        const { pct, vw, vh } = await analyzeMask(svgText, ANALYSIS_LONG_SIDE);
         document.getElementById('pctVal').textContent = pct.toFixed(2)+'%';
-        document.getElementById('resVal').textContent = `${resW}×${resH}`;
+        document.getElementById('ratioVal').textContent = formatAspect(vw, vh);
         document.getElementById('analysis').innerHTML =
           `Black (window/hole) area is <b>${pct.toFixed(2)}%</b> of the facade mask.`;
         toast('SVG uploaded & repaired', 'success');
       };
       r.readAsText(f);
+    }
+
+    function gcd(a,b){ a=Math.abs(Math.round(a)); b=Math.abs(Math.round(b)); while(b){ [a,b]=[b,a%b]; } return a||1; }
+    function formatAspect(w,h){
+      if(!w || !h) return '—';
+      const g = gcd(w,h);
+      return `${Math.round(w/g)}:${Math.round(h/g)} (${(w/h).toFixed(3)})`;
     }
 
     function render(svg){
@@ -435,7 +386,6 @@
           { role:'user', content:`Window-to-wall ratio (black) is ${pct.toFixed(2)}%. Suggest improvements.` }
         ]);
         
-        // 🟢 USE THE NEW DISPLAY FUNCTION:
         displayRecommendations(rec);
         
       } catch {
@@ -444,14 +394,17 @@
     }
 
     async function analyzeMask(svg, longSide=768){
-      const { svgText: fixed, w, h } = await normalizeSvgSize(svg);
+      const { svgText: fixed, w: vw, h: vh } = await normalizeSvgSize(svg);
+
       let cw, ch;
-      if (w >= h) { cw = longSide; ch = Math.max(1, Math.round(longSide * (h / w))); }
-      else        { ch = longSide; cw = Math.max(1, Math.round(longSide * (w / h))); }
+      if (vw >= vh) { cw = longSide; ch = Math.max(1, Math.round(longSide * (vh / vw))); }
+      else          { ch = longSide;  cw = Math.max(1, Math.round(longSide * (vw / vh))); }
 
       const img = await svgToImg(fixed);
       await img.decode?.().catch(()=>{});
       const { canvas, ctx } = makeCanvas(cw, ch);
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0,0,cw,ch);
       ctx.drawImage(img,0,0,cw,ch);
 
       const data = ctx.getImageData(0,0,cw,ch).data;
@@ -463,7 +416,7 @@
         const lum = 0.2126*r + 0.7152*g + 0.0722*b;
         if(lum < 40) black++;
       }
-      return { pct: total ? (black/total)*100 : 0, resW: cw, resH: ch };
+      return { pct: total ? (black/total)*100 : 0, resW: cw, resH: ch, vw, vh };
     }
     function svgToImg(txt){
       return new Promise((resolve,reject)=>{
@@ -476,81 +429,133 @@
     function makeCanvas(w,h){ const c=document.createElement('canvas'); c.width=w; c.height=h; return { canvas:c, ctx:c.getContext('2d') }; }
 
     function displayRecommendations(recommendationText) {
-        const recsWrap = document.getElementById('recsWrap');
-        const recsContainer = document.getElementById('recs');
-        
-        if (!recommendationText || recommendationText.trim() === '') {
-          recsWrap.style.display = 'none';
+      const wrap = document.getElementById('recsWrap');
+      const container = document.getElementById('recs');
+      const meta = document.getElementById('recsMeta');
+
+      if (!recommendationText || recommendationText.trim() === '') {
+        wrap.style.display = 'none';
+        return;
+      }
+
+      const recs = parseRecommendations(recommendationText);
+      const total = recs.length;
+
+      if (!total) {
+        container.innerHTML = '<div class="no-recs">No specific recommendations available.</div>';
+        meta.innerHTML = '';
+        wrap.style.display = 'block';
+        return;
+      }
+
+      // group by type to match your CSS (.icon.daylight/.icon.rhythm/.icon.comfort/.icon.general)
+      const groups = {
+        daylight: [],
+        rhythm: [],
+        comfort: [],
+        general: []
+      };
+      recs.forEach(r => groups[r.type].push(r));
+
+      // meta badges
+      meta.innerHTML = `
+        <span class="pill">${total} recommendations</span>
+        <span class="pill">Auto-generated</span>
+      `;
+
+      const groupInfo = {
+        daylight: { label: 'Daylight Optimization', emoji: '☀️', iconClass: 'daylight' },
+        rhythm:   { label: 'Facade Rhythm',        emoji: '📐', iconClass: 'rhythm'   },
+        comfort:  { label: 'Thermal Comfort',      emoji: '🌡️', iconClass: 'comfort'  },
+        general:  { label: 'General Advice',       emoji: '💭', iconClass: 'general'  }
+      };
+
+      const order = ['daylight', 'rhythm', 'comfort', 'general'];
+
+      container.innerHTML = order
+        .filter(k => groups[k].length)
+        .map(k => {
+          const info = groupInfo[k];
+          const cards = groups[k].map(item => `
+            <div class="rec-card">
+              <div class="rec-title">${item.title}</div>
+              <div class="rec-content">${item.content}</div>
+              ${item.tag ? `<span class="rec-tag">${item.tag}</span>` : ''}
+            </div>
+          `).join('');
+
+          return `
+            <div class="rec-group">
+              <div class="rec-group-head">
+                <div class="rec-group-title">
+                  <div class="icon ${info.iconClass}">${info.emoji}</div>
+                  <div>${info.label}</div>
+                </div>
+                <div class="rec-count">${groups[k].length}</div>
+              </div>
+              <div class="rec-grid">${cards}</div>
+            </div>
+          `;
+        }).join('');
+
+      wrap.style.display = 'block';
+    }
+
+    function parseRecommendations(text) {
+      // Expect lines like "- something". Keep only bullet lines.
+      const lines = text
+        .split('\n')
+        .map(l => l.trim())
+        .filter(l => /^[-•*]\s+/.test(l))
+        .map(l => l.replace(/^[-•*]\s+/, '').replace(/\*\*/g, ''));
+
+      const out = [];
+
+      lines.forEach(line => {
+        const lc = line.toLowerCase();
+
+        if (lc.includes('daylight') || lc.includes('light ratio') || lc.includes('wwr')) {
+          out.push({
+            type: 'daylight',
+            title: 'Daylight Optimization',
+            content: line,
+            tag: 'Energy Efficiency'
+          });
           return;
         }
 
-        const recommendations = parseRecommendations(recommendationText);
-        
-        if (recommendations.length === 0) {
-          recsContainer.innerHTML = '<div class="no-recs">No specific recommendations available.</div>';
-        } else {
-          recsContainer.innerHTML = recommendations.map(rec => `
-            <div class="rec-card">
-              <div class="rec-header">
-                <div class="rec-icon ${rec.type}">
-                  ${rec.icon}
-                </div>
-                <div class="rec-title">${rec.title}</div>
-              </div>
-              <div class="rec-content">${rec.content}</div>
-              ${rec.tag ? `<div class="rec-tag">${rec.tag}</div>` : ''}
-            </div>
-          `).join('');
+        if (lc.includes('rhythm') || lc.includes('pattern') || lc.includes('spacing')) {
+          out.push({
+            type: 'rhythm',
+            title: 'Facade Rhythm',
+            content: line,
+            tag: 'Visual Appeal'
+          });
+          return;
         }
-        
-        recsWrap.style.display = 'block';
-      }
 
-      function parseRecommendations(text) {
-        const recommendations = [];
-        
-        const lines = text.split(/[-•*]\s*/).filter(line => line.trim().length > 0);
-        
-        lines.forEach(line => {
-          const cleaned = line.trim().replace(/\*\*/g, '');
-          
-          if (cleaned.toLowerCase().includes('daylight') || cleaned.toLowerCase().includes('light')) {
-            recommendations.push({
-              type: 'daylight',
-              icon: '☀️',
-              title: 'Daylight Optimization',
-              content: cleaned,
-              tag: 'Energy Efficiency'
-            });
-          } else if (cleaned.toLowerCase().includes('rhythm') || cleaned.toLowerCase().includes('pattern')) {
-            recommendations.push({
-              type: 'rhythm',
-              icon: '📐',
-              title: 'Facade Rhythm',
-              content: cleaned,
-              tag: 'Visual Appeal'
-            });
-          } else if (cleaned.toLowerCase().includes('comfort') || cleaned.toLowerCase().includes('thermal')) {
-            recommendations.push({
-              type: 'comfort',
-              icon: '🌡️',
-              title: 'Thermal Comfort',
-              content: cleaned,
-              tag: 'User Comfort'
-            });
-          } else if (cleaned.length > 20) {
-            recommendations.push({
-              type: 'comfort',
-              icon: '💭',
-              title: 'General Advice',
-              content: cleaned,
-              tag: 'Architecture'
-            });
-          }
+        if (lc.includes('comfort') || lc.includes('thermal') || lc.includes('shading') || lc.includes('glazing')) {
+          out.push({
+            type: 'comfort',
+            title: 'Thermal Comfort',
+            content: line,
+            tag: 'User Comfort'
+          });
+          return;
+        }
+
+        // default bucket
+        out.push({
+          type: 'general',
+          title: 'General Advice',
+          content: line,
+          tag: 'Architecture'
         });
-        
-        return recommendations;
-      }
+      });
+
+      return out;
+    }
+
 
     // ===== Chat → try LLM → else Local Fallback Editor =====
     async function send(){
@@ -565,7 +570,7 @@
       }
 
       // 🟢 USE ENHANCED EDITOR HERE:
-      const editor = new EnhancedSVGEditor(llm);
+      const editor = new SVGEditor(llm);
       
       try {
         const result = await editor.smartEdit(svgText, msg);
@@ -935,38 +940,33 @@
         // kill CSS/defs/masks/filters/clips that can flip colors
         doc.querySelectorAll('style, defs, mask, clipPath, filter, pattern').forEach(n=>n.remove());
 
-        // solid background
-        ensureWhiteBG(doc, svg, w, h);
+        // // flip any full-canvas black rect to white
+        // doc.querySelectorAll('rect').forEach(r=>{
+        //   const rw=+r.getAttribute('width')||0, rh=+r.getAttribute('height')||0;
+        //   const rx=+r.getAttribute('x')||0, ry=+r.getAttribute('y')||0;
+        //   const { fill, opacity } = effectiveFillAndOpacity(r);
+        //   const isBlack = (fill||'').toLowerCase() === '#000000' && opacity>0.02;
+        //   if(isFull(rw,rh,w,h) && near(rx,0) && near(ry,0) && isBlack){
+        //     r.setAttribute('fill','#ffffff'); r.setAttribute('fill-opacity','1');
+        //   }
+        // });
 
-        // flip any full-canvas black rect to white
-        doc.querySelectorAll('rect').forEach(r=>{
-          const rw=+r.getAttribute('width')||0, rh=+r.getAttribute('height')||0;
-          const rx=+r.getAttribute('x')||0, ry=+r.getAttribute('y')||0;
-          const { fill, opacity } = effectiveFillAndOpacity(r);
-          const isBlack = (fill||'').toLowerCase() === '#000000' && opacity>0.02;
-          if(isFull(rw,rh,w,h) && near(rx,0) && near(ry,0) && isBlack){
-            r.setAttribute('fill','#ffffff'); r.setAttribute('fill-opacity','1');
-          }
-        });
-
-        // normalize geometry fills
+        // normalize geometry fills, but preserve transparency
         const geomTags = ['rect','circle','ellipse','path','polygon','polyline'];
-        doc.querySelectorAll('*').forEach(el=>{
-          const tag = el.tagName.toLowerCase();
-          if(!geomTags.includes(tag)) return;
-          const eff = effectiveFillAndOpacity(el);
-          let f = eff.fill ? eff.fill.toLowerCase() : '';
-          const op = eff.opacity;
-
-          if(!f || f==='none' || op<=0.02){
-            el.setAttribute('fill','#ffffff'); el.setAttribute('fill-opacity','1');
-            el.removeAttribute('stroke');
-          }else{
-            if(f==='black') f='#000000';
-            if(f==='white') f='#ffffff';
-            el.setAttribute('fill', f); el.setAttribute('fill-opacity','1');
+        doc.querySelectorAll(geomTags.join(',')).forEach(el=>{
+          const { fill } = effectiveFillAndOpacity(el);
+          if (!fill || fill.toLowerCase() === 'none') {
+            el.removeAttribute('fill'); // keep transparent
+          } else {
+            let f = fill.trim().toLowerCase();
+            if (f === 'black')  f = '#000000';
+            if (f === 'white')  f = '#ffffff';
+            el.setAttribute('fill', f);
           }
+          el.removeAttribute('fill-opacity'); // avoid accidental opacity forcing
+          el.removeAttribute('opacity');
         });
+
 
         return new XMLSerializer().serializeToString(doc);
       }catch{ return txt; }
