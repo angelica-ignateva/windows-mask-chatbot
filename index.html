@@ -13,23 +13,30 @@
     .header{text-align:center;margin-bottom:30px}
     .header h1{color:#2d3748;font-size:2.4rem;margin:0 0 10px;background:linear-gradient(45deg,#667eea,#764ba2);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
     .header p{color:#718096;font-size:1.05rem;margin:0}
+
+    /* --- Layout --- */
     .grid{display:grid;grid-template-columns:1fr 1fr;gap:30px;margin-bottom:30px}
     .panel{background:#fff;border-radius:15px;padding:25px;box-shadow:0 10px 25px rgba(0,0,0,.1);border:1px solid #e2e8f0}
     .panel h3{color:#2d3748;margin:0 0 14px;font-size:1.15rem;display:flex;align-items:center}
     .panel h3::before{content:"🏢";margin-right:10px}
+
+    /* Make upload & analysis same, larger size with scrolls */
+    .tall{height:720px;display:flex;flex-direction:column}
+    .panel.tall{overflow:hidden}
+
     .upload{border:2px dashed #cbd5e0;border-radius:10px;padding:30px 16px;text-align:center;transition:all .3s ease;cursor:pointer;background:#f7fafc}
     .upload:hover{border-color:#667eea;background:#edf2f7}
     .upload input{display:none}
-    .svgbox{width:100%;height:320px;border:1px solid #e2e8f0;border-radius:10px;display:flex;align-items:center;justify-content:center;background:#f7fafc;margin-bottom:14px}
+
+    .svgbox{width:100%;height:480px;border:1px solid #e2e8f0;border-radius:10px;display:flex;align-items:center;justify-content:center;background:#f7fafc;margin:14px 0;overflow:auto}
+
     .row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
     .btn{padding:10px 18px;background:linear-gradient(45deg,#667eea,#764ba2);color:#fff;border:none;border-radius:10px;cursor:pointer;font-weight:600;transition:all .2s ease}
     .btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(102,126,234,.3)}
     .btn.secondary{background:#2d3748}
+    .btn.ghost{background:#fff;color:#4f46e5;border:1px solid #c7d2fe}
     .btn:disabled{background:#cbd5e0;cursor:not-allowed;transform:none;box-shadow:none}
-    .meta{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
-    .metric{background:#f7fafc;border:1px solid #e2e8f0;border-radius:10px;padding:12px}
-    .metric .label{color:#718096;font-size:.9rem;margin-bottom:4px}
-    .metric .value{color:#2d3748;font-weight:700;font-size:1.2rem}
+
     .status{padding:10px 15px;border-radius:8px;margin:12px 0;font-weight:500}
     .status.success{background:#c6f6d5;color:#22543d;border:1px solid #9ae6b4}
     .status.error{background:#fed7d7;color:#822727;border:1px solid #feb2b2}
@@ -37,13 +44,13 @@
     .status.info{background:#dbeafe;color:#1e40af;border:1px solid #93c5fd}
 
     /* Analysis container */
-    .analysis-container{background:#fff;border-radius:15px;padding:0;box-shadow:0 10px 25px rgba(0,0,0,.1);border:1px solid #e2e8f0;overflow:hidden}
+    .analysis-container{background:#fff;border-radius:15px;padding:0;box-shadow:0 10px 25px rgba(0,0,0,.1);border:1px solid #e2e8f0;overflow:hidden;display:flex;flex-direction:column;height:770px}
     .analysis-header{background:linear-gradient(135deg,#667eea,#764ba2);color:#fff;padding:20px 25px;margin:0}
     .analysis-header h3{color:#fff;margin:0;font-size:1.2rem;display:flex;align-items:center;gap:10px}
-    .analysis-content{padding:25px}
+    .analysis-content{padding:25px;overflow:auto}
 
     /* Metrics grid */
-    .analysis-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:20px}
+    .analysis-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:20px}
     .analysis-metric{background:#f8fafc;border:1px solid #e2e8f0;border-radius:10px;padding:16px;text-align:center}
     .analysis-metric .metric-icon{font-size:24px;margin-bottom:8px}
     .analysis-metric .metric-label{color:#64748b;font-size:.85rem;margin-bottom:4px;font-weight:500}
@@ -75,14 +82,13 @@
     .priority-medium{background:#fffbeb;color:#b45309;border-color:#fed7aa}
     .priority-low{background:#f0fdf4;color:#16a34a;border-color:#bbf7d0}
 
-    /* Code-style fallback look tidy */
+    /* Code-style fallback */
     .analysis-content pre,
-    .analysis-content code{
-      background:#f8fafc;border:1px solid #e5e7eb;border-radius:8px;
-      padding:10px;display:block;overflow:auto;font-size:.9rem
-    }
+    .analysis-content code{background:#f8fafc;border:1px solid #e5e7eb;border-radius:8px;padding:10px;display:block;overflow:auto;font-size:.9rem}
 
     select,input[type="text"]{padding:10px 12px;border-radius:10px;border:1px solid #e2e8f0}
+
+    /* Chat */
     .chat{background:#fff;border-radius:15px;padding:25px;box-shadow:0 10px 25px rgba(0,0,0,.1);border:1px solid #e2e8f0}
     .messages{height:380px;overflow-y:auto;border:1px solid #e2e8f0;border-radius:10px;padding:12px;background:#f7fafc;margin-bottom:12px}
     .message{margin-bottom:12px;padding:10px 12px;border-radius:10px;max-width:80%}
@@ -90,17 +96,19 @@
     .bot{background:#fff;border:1px solid #e2e8f0;color:#2d3748}
     .input{display:flex;gap:10px}
     .text{flex:1;padding:12px 16px;border:1px solid #e2e8f0;border-radius:10px;font-size:16px;outline:none}
+    .quick{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0 6px}
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
       <h1>🏢 Professional Facade Analysis</h1>
-      <p>Upload SVG facade masks for comprehensive architectural analysis using GPT-4o</p>
+      <p>Upload SVG facade masks for compact architectural analysis</p>
     </div>
 
     <div class="grid">
-      <div class="panel">
+      <!-- Upload & Preview (taller, scroll-safe) -->
+      <div class="panel tall">
         <h3>Upload & Preview</h3>
         <div class="upload" onclick="document.getElementById('svgFile').click()">
           <input type="file" id="svgFile" accept=".svg" onchange="onFile(event)"/>
@@ -108,24 +116,21 @@
           <small style="color:#718096">Black → windows • White/transparent → facade</small>
         </div>
         <div class="svgbox" id="svgBox"><em style="color:#a0aec0;">Your SVG will appear here</em></div>
-        <div class="row">
+        <div class="row" style="margin-top:auto;">
           <button class="btn" id="analyzeBtn" disabled onclick="performProfessionalAnalysis()">📊 Professional Analysis</button>
           <button class="btn secondary" id="downloadBtn" disabled onclick="downloadSVG()">💾 Download</button>
-        </div>
-        <div class="meta" style="margin-top:10px;">
-          <div class="metric"><div class="label">Window Ratio</div><div class="value" id="pctVal">—</div></div>
-          <div class="metric"><div class="label">Aspect Ratio</div><div class="value" id="ratioVal">—</div></div>
         </div>
         <div id="status"></div>
       </div>
 
+      <!-- Analysis (same height as upload, scrollable) -->
       <div class="analysis-container">
         <div class="analysis-header">
           <h3>🔬 Professional Analysis</h3>
         </div>
         <div class="analysis-content" id="analysisContent">
           <div style="text-align:center;color:#718096;padding:40px 20px;">
-            Upload an SVG facade mask to begin professional architectural analysis
+            Upload an SVG facade mask to begin professional analysis
           </div>
         </div>
       </div>
@@ -145,8 +150,15 @@
 
     <div class="chat">
       <h3 style="color:#2d3748;margin-bottom:12px;">💬 AI-Powered SVG Editor</h3>
+      <div class="quick">
+        <button class="btn ghost" onclick="quickPrompt('make all windows round')">round windows</button>
+        <button class="btn ghost" onclick="quickPrompt('increase window size by 50%')">bigger by 50%</button>
+        <button class="btn ghost" onclick="quickPrompt('reduce window spacing horizontally by 50%')">tighter spacing</button>
+        <button class="btn ghost" onclick="quickPrompt('align windows into 6 columns and 8 rows')">6×8 grid</button>
+        <button class="btn ghost" onclick="quickPrompt('alternate every other column with narrow windows')">alternate columns</button>
+      </div>
       <div class="messages" id="msgs">
-        <div class="message bot"><strong>AI Assistant:</strong> Professional facade editing available. Try: "optimize window sizing for daylighting", "improve thermal performance", "enhance visual rhythm".</div>
+        <div class="message bot"><strong>AI Assistant:</strong> Try quick actions above or type things like: "increase window size by 10%", "convert to 5×7 grid", "make all windows square", "add a central atrium void".</div>
       </div>
       <div class="input">
         <input class="text" id="ask" placeholder="Describe architectural modifications needed..." onkeypress="enterSend(event)"/>
@@ -165,7 +177,7 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            model: "gpt-4o",
+            model: document.getElementById('model').value || 'gpt-4o',
             messages,
             temperature,
             max_tokens: 4000
@@ -179,7 +191,7 @@
     const ai = new AIClient();
 
     // =========================
-    // Upload + Rendering (FIXED)
+    // Upload + Rendering (updated)
     // =========================
     async function onFile(event) {
       const file = event.target.files[0];
@@ -195,10 +207,6 @@
           svgText = normalized.svgText;
           renderSVG(svgText);
           enableControls(true);
-
-          const metrics = await analyzeFacadeMetrics(svgText);
-          document.getElementById('pctVal').textContent = metrics.windowToWallRatio.toFixed(1) + '%';
-          document.getElementById('ratioVal').textContent = metrics.aspectRatio.toFixed(2) + ':1';
           showToast('SVG uploaded successfully', 'success');
         } catch (error) {
           console.error(error);
@@ -225,9 +233,7 @@
       const svgEl = doc.documentElement;
       svgEl.style.width = '100%';
       svgEl.style.height = '100%';
-      svgEl.style.maxHeight = '300px';
       svgEl.setAttribute('preserveAspectRatio', 'xMidYMid meet');
-
       container.appendChild(svgEl);
     }
 
@@ -271,13 +277,22 @@
       const parser = new DOMParser();
       const doc = parser.parseFromString(svgText, 'image/svg+xml');
       const images = doc.querySelectorAll('image, img');
-
       images.forEach((img) => {
         const href = img.getAttribute('href') || img.getAttributeNS('http://www.w3.org/1999/xlink', 'href');
         if (href && /^https?:\/\//i.test(href)) img.parentNode.removeChild(img);
       });
-
       return new XMLSerializer().serializeToString(doc);
+    }
+
+    // Quick sanity check of SVG code (no rasterization)
+    function inspectSvgSyntax(svg) {
+      const doc = new DOMParser().parseFromString(svg, 'image/svg+xml');
+      const all = Array.from(doc.querySelectorAll('*'));
+      const fills = all.map(n => (n.getAttribute && (n.getAttribute('fill') || '')).toLowerCase()).filter(Boolean);
+      const hasColors = fills.some(f => f && f !== '#000' && f !== '#000000' && f !== 'black' && f !== 'none' && f !== '#fff' && f !== '#ffffff' && f !== 'white');
+      const hasStrokes = all.some(n => (n.getAttribute && n.getAttribute('stroke')));
+      const imgTags = doc.querySelectorAll('image, img').length;
+      return { hasColors, hasStrokes, imgTags };
     }
 
     // =========================
@@ -290,9 +305,10 @@
       analysisContent.innerHTML = '<div style="text-align:center;padding:40px;"><span class="loading-spinner"></span> <span style="margin-left:10px;">Performing concise analysis...</span></div>';
 
       try {
-        const metrics = await analyzeFacadeMetrics(svgText);
+        const metrics = await analyzeFacadeMetrics(svgText); // metrics computed here (after click only)
+        const syntax = inspectSvgSyntax(svgText);
         const analysis = await getAIProfessionalAnalysis(metrics, svgText);
-        renderProfessionalAnalysis(metrics, analysis);
+        renderProfessionalAnalysis(metrics, analysis, syntax);
       } catch (error) {
         console.error('Analysis failed:', error);
         analysisContent.innerHTML = `
@@ -303,21 +319,22 @@
     }
 
     async function getAIProfessionalAnalysis(metrics, svg) {
-      const systemPrompt = `You are a senior facade consultant.
-Return ONLY compact JSON (no markdown) with fields:
+      const systemPrompt = `You are a senior facade consultant focused on SVG-editable geometry only. Return ONLY compact JSON (no markdown) with fields:
 {
   "summary": ["• one-line finding", "• one-line finding", "• one-line finding"],
   "performance": { "energy": 0-100, "daylighting": 0-100, "thermal": 0-100, "visual": 0-100 },
   "recommendations": [
-    { "id":"slug", "title":"Short action label", "rationale":"1 sentence why", "priority":"high|medium|low", "action_prompt":"Plain-English edit request the SVG editor can apply" }
+    { "id":"slug", "title":"Short geometry action", "rationale":"1 sentence why", "priority":"high|medium|low", "action_prompt":"Plain English edit the SVG editor can apply" }
   ]
 }
-Rules: Be concise. Avoid repeating WWR/areas already shown in UI. Keep 3–6 recommendations.`;
-      const userPrompt = `Metrics:
-- WWR: ${metrics.windowToWallRatio.toFixed(1)}%
-- Aspect Ratio: ${metrics.aspectRatio.toFixed(2)}:1
-- Window Area: ${Math.round(metrics.windowArea)}
-Return the JSON now.`;
+Rules (VERY IMPORTANT):
+- Keep 3–6 recommendations.
+- Only output actions that can be achieved by editing the SVG geometry (resize/offset windows, spacing, count, grid, shape, alignment, grouping, perforation pattern, add/remove voids). 
+- DO NOT suggest materials, glazing types, coatings, insulation, light shelves, interior finishes, HVAC, or any construction details.
+- Priorities must be "high", "medium" or "low" (lowercase). Use clear titles with no emojis or stray words like HIGH.
+- Do not repeat metrics (WWR/aspect) already shown in UI.`;
+
+      const userPrompt = `Metrics:\n- WWR: ${metrics.windowToWallRatio.toFixed(1)}%\n- Facade Ratio: ${(100 - metrics.windowToWallRatio).toFixed(1)}%\n- Aspect Ratio: ${metrics.aspectRatio.toFixed(2)}:1\nReturn the JSON now.`;
 
       const raw = await ai.chat([
         { role: 'system', content: systemPrompt },
@@ -346,58 +363,60 @@ Return the JSON now.`;
       return normalizeCompact(obj);
     }
     function tryParseJSON(s){ try { return JSON.parse(s); } catch { return null; } }
+
+    // Filter out irrelevant recs (materials, insulation, light shelves, etc.)
     function normalizeCompact(a) {
       const summary = Array.isArray(a.summary) ? a.summary.filter(Boolean).slice(0,3) : [];
       const perf = a.performance && typeof a.performance === 'object' ? a.performance : {};
       let recs = Array.isArray(a.recommendations) ? a.recommendations : [];
+
+      const banned = /(glazing|coating|u-?value|low-?e|insulation|r-?value|light\s*shelves?|interior\s*finishes?|wall\s*insulation|hvac|thermal\s*break|spandrel|argon|frame|mullion\s*material)/i;
       const seen = new Set();
       recs = recs.filter(r => {
-        const k = (r.title || '').trim().toLowerCase();
-        if (!k || seen.has(k)) return false;
-        seen.add(k);
+        const t = (r.title||'').trim();
+        const p = (r.priority||'').toLowerCase();
+        if (!t || banned.test(t) || banned.test(r.rationale||'') || banned.test(r.action_prompt||'')) return false;
+        if (!/^(high|medium|low)$/.test(p)) r.priority = 'medium';
+        const key = t.toLowerCase();
+        if (seen.has(key)) return false; seen.add(key);
         return true;
       }).slice(0,6).map((r,i)=>({
         id: r.id || `rec-${i+1}`,
         title: r.title || `Recommendation ${i+1}`,
         rationale: r.rationale || '',
         priority: (r.priority || 'medium').toLowerCase(),
-        action_prompt: r.action_prompt || r.title || 'Improve facade.'
+        action_prompt: r.action_prompt || r.title || 'Improve facade geometry.'
       }));
       return { summary, performance: perf, recommendations: recs };
     }
 
-    function renderProfessionalAnalysis(metrics, analysis) {
+    function renderProfessionalAnalysis(metrics, analysis, syntax) {
       const container = document.getElementById('analysisContent');
       const perf = analysis.performance || {};
       const recs = Array.isArray(analysis.recommendations) ? analysis.recommendations : [];
       const summary = Array.isArray(analysis.summary) ? analysis.summary : [];
+      const facadeRatio = Math.max(0, 100 - metrics.windowToWallRatio);
 
       container.innerHTML = `
-        <!-- Key Metrics -->
+        <!-- Key Metrics (only WWR, Facade Ratio, Aspect Ratio) -->
         <div class="analysis-metrics">
           <div class="analysis-metric">
-            <div class="metric-icon">🔢</div>
-            <div class="metric-label">WWR</div>
+            <div class="metric-icon">🪟</div>
+            <div class="metric-label">Window Ratio (WWR)</div>
             <div class="metric-value">${metrics.windowToWallRatio.toFixed(1)}%</div>
             <div class="metric-context">${getWWRAssessment(metrics.windowToWallRatio)}</div>
           </div>
           <div class="analysis-metric">
-            <div class="metric-icon">📏</div>
+            <div class="metric-icon">🧱</div>
+            <div class="metric-label">Facade Ratio</div>
+            <div class="metric-value">${facadeRatio.toFixed(1)}%</div>
+            <div class="metric-context">Wall vs. openings</div>
+          </div>
+          <div class="analysis-metric">
+            <div class="metric-icon">📐</div>
             <div class="metric-label">Aspect Ratio</div>
-            <div class="metric-value">${metrics.aspectRatio.toFixed(2)}:1</div>
+            <div class="metric-value">${metrics.aspectRatio.toFixed(1)}:1</div>
             <div class="metric-context">${getAspectAssessment(metrics.aspectRatio)}</div>
-          </div>
-          <div class="analysis-metric">
-            <div class="metric-icon">🏗️</div>
-            <div class="metric-label">Facade Area</div>
-            <div class="metric-value">${Math.round(metrics.totalArea).toLocaleString()}</div>
-            <div class="metric-context">units²</div>
-          </div>
-          <div class="analysis-metric">
-            <div class="metric-icon">🪟</div>
-            <div class="metric-label">Window Area</div>
-            <div class="metric-value">${Math.round(metrics.windowArea).toLocaleString()}</div>
-            <div class="metric-context">units²</div>
           </div>
         </div>
 
@@ -431,18 +450,14 @@ Return the JSON now.`;
           </div>
         </div>
 
-        <!-- Recommendations -->
+        <!-- Recommendations (geometry-only) -->
         ${recs.length ? `
         <div class="assessment-section">
           <div class="assessment-header">
             <div class="assessment-icon" style="background:linear-gradient(45deg,#8b5cf6,#7c3aed)">💡</div>
             <div class="assessment-title">Recommendations</div>
           </div>
-
-          <div class="performance-desc" style="margin-bottom:8px;color:#6b7280;">
-            Click a chip to apply via the AI editor. You can tweak the prompt in the chat afterward.
-          </div>
-
+          <div class="performance-desc" style="margin-bottom:8px;color:#6b7280;">Click a chip to apply via the AI editor. You can tweak the prompt in the chat afterward.</div>
           <div class="row" style="gap:8px;flex-wrap:wrap;">
             ${recs.map(r => `
               <button class="btn rec-chip" onclick='applyRecommendation(${JSON.stringify(r)})'>
@@ -450,7 +465,6 @@ Return the JSON now.`;
               </button>
             `).join('')}
           </div>
-
           <div style="margin-top:12px;">
             ${recs.map(r => `
               <div class="performance-item" style="margin-bottom:10px;">
@@ -473,61 +487,45 @@ Return the JSON now.`;
     }
 
     // =========================
-    // Metrics & low-level analyzers
+    // Metrics & analyzers
     // =========================
     async function analyzeFacadeMetrics(svg) {
       const { svgText: normalized, w: width, h: height } = await normalizeSvgSize(svg);
       const { pct: wwr, resW, resH } = await calculateWindowRatio(normalized, ANALYSIS_RESOLUTION);
       const aspectRatio = width / height;
-      const totalArea = width * height;
-      const windowArea = (wwr / 100) * totalArea;
-      const distribution = await analyzeWindowDistribution(normalized);
       return {
         windowToWallRatio: wwr,
         aspectRatio,
         facadeWidth: width,
         facadeHeight: height,
-        totalArea,
-        windowArea,
-        analysisResolution: `${resW}×${resH}`,
-        distribution
+        analysisResolution: `${resW}×${resH}`
       };
     }
 
+    // (Raster method kept for accuracy; executed only during analysis click)
     async function calculateWindowRatio(svg, resolution) {
       const { svgText: fixed, w: vw, h: vh } = await normalizeSvgSize(svg);
-
       let cw, ch;
       if (vw >= vh) { cw = resolution; ch = Math.max(1, Math.round(resolution * (vh / vw))); }
       else { ch = resolution; cw = Math.max(1, Math.round(resolution * (vw / vh))); }
-
       const safeSvg = sanitizeForCanvas(fixed);
       const img = await svgToImage(safeSvg);
-
       const canvas = document.createElement('canvas');
       canvas.width = cw; canvas.height = ch;
       const ctx = canvas.getContext('2d');
-
       ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, cw, ch);
       ctx.drawImage(img, 0, 0, cw, ch);
-
       const imageData = ctx.getImageData(0, 0, cw, ch).data;
       let blackPixels = 0, totalPixels = 0;
-
       for (let i = 0; i < imageData.length; i += 4) {
         const r = imageData[i], g = imageData[i + 1], b = imageData[i + 2], a = imageData[i + 3];
-        if (a < 10) continue;
-        totalPixels++;
+        if (a < 10) continue; totalPixels++;
         const luminance = 0.2126 * r + 0.7152 * g + 0.0722 * b;
         if (luminance < 40) blackPixels++;
       }
       const percentage = totalPixels > 0 ? (blackPixels / totalPixels) * 100 : 0;
       return { pct: percentage, resW: cw, resH: ch, vw, vh };
-    }
-
-    async function analyzeWindowDistribution(svg) {
-      return { horizontal: "regular", vertical: "regular", clustering: "distributed" };
     }
 
     function svgToImage(svgText) {
@@ -568,7 +566,7 @@ Return the JSON now.`;
       const descriptions = {
         energy: score >= 70 ? "Good thermal performance expected" : "Energy efficiency could be improved",
         daylighting: score >= 70 ? "Adequate natural light penetration" : "Consider optimizing window placement",
-        thermal: score >= 70 ? "Balanced solar heat gain" : "Review shading and glazing strategies",
+        thermal: score >= 70 ? "Balanced solar heat gain" : "Review shading and geometry",
         visual: score >= 70 ? "Good architectural rhythm and proportions" : "Consider facade composition improvements"
       };
       return descriptions[category] || "Performance analysis available";
@@ -579,7 +577,7 @@ Return the JSON now.`;
     }
 
     // =========================
-    // Chat + Rec application
+    // Chat + Rec application (geometry-only editing)
     // =========================
     function addMessage(text, sender = 'bot') {
       const messages = document.getElementById('msgs');
@@ -588,6 +586,12 @@ Return the JSON now.`;
       message.innerHTML = `<strong>${sender === 'user' ? 'You' : 'AI Assistant'}:</strong> ${escapeHTML(text)}`;
       messages.appendChild(message);
       messages.scrollTop = messages.scrollHeight;
+    }
+
+    function quickPrompt(text){
+      const input = document.getElementById('ask');
+      input.value = text;
+      send();
     }
 
     async function send() {
@@ -609,12 +613,9 @@ Return the JSON now.`;
       }
 
       try {
-        const editPrompt = `You are an expert SVG facade editor. The user wants to: "${message}"
-
-Current SVG:
-${svgText}
-
-Return ONLY the modified SVG code. Preserve viewBox and dimensions. Black shapes are windows, white/transparent is facade material.`;
+        const editPrompt = `You are an expert SVG facade editor. Only return valid SVG code. The user wants to: "${message}"
+Rules: Edit geometry only (window shapes, sizes, spacing, grid, alignment, grouping, add/remove openings). Do NOT reference materials, glazing, insulation, light shelves, or finishes.
+\nCurrent SVG:\n${svgText}`;
 
         const response = await ai.chat(
           [
@@ -629,12 +630,7 @@ Return ONLY the modified SVG code. Preserve viewBox and dimensions. Black shapes
           const normalized = await normalizeSvgRoot(modifiedSVG);
           svgText = normalized.svgText;
           renderSVG(svgText);
-
-          const metrics = await analyzeFacadeMetrics(svgText);
-          document.getElementById('pctVal').textContent = metrics.windowToWallRatio.toFixed(1) + '%';
-          document.getElementById('ratioVal').textContent = metrics.aspectRatio.toFixed(2) + ':1';
-
-          addMessage(`Applied successfully! New WWR: ${metrics.windowToWallRatio.toFixed(1)}%`);
+          addMessage('Applied successfully. Run Professional Analysis to update metrics.');
         } else {
           addMessage('Could not apply the requested modification. Please try tweaking the prompt.', 'bot');
         }
@@ -650,12 +646,9 @@ Return ONLY the modified SVG code. Preserve viewBox and dimensions. Black shapes
       addMessage(`Apply: ${message}`, 'user');
 
       try {
-        const editPrompt = `You are an expert SVG facade editor. The user wants to: "${message}"
-
-Current SVG:
-${svgText}
-
-Return ONLY the modified SVG code. Preserve viewBox and dimensions. Black shapes are windows, white/transparent is facade material.`;
+        const editPrompt = `You are an expert SVG facade editor. Only return valid SVG code. The user wants to: "${message}"
+Rules: Edit geometry only (window shapes, sizes, spacing, grid, alignment, grouping, add/remove openings). Do NOT reference materials, glazing, insulation, light shelves, or finishes.
+\nCurrent SVG:\n${svgText}`;
 
         const response = await ai.chat(
           [
@@ -670,12 +663,7 @@ Return ONLY the modified SVG code. Preserve viewBox and dimensions. Black shapes
           const normalized = await normalizeSvgRoot(modifiedSVG);
           svgText = normalized.svgText;
           renderSVG(svgText);
-
-          const metrics = await analyzeFacadeMetrics(svgText);
-          document.getElementById('pctVal').textContent = metrics.windowToWallRatio.toFixed(1) + '%';
-          document.getElementById('ratioVal').textContent = metrics.aspectRatio.toFixed(2) + ':1';
-
-          addMessage(`Applied "${rec.title}". New WWR: ${metrics.windowToWallRatio.toFixed(1)}%`);
+          addMessage(`Applied "${rec.title}". Run Professional Analysis to update metrics.`);
         } else {
           addMessage('Could not apply this recommendation. Try tweaking the prompt in the chat.', 'bot');
         }
