@@ -35,6 +35,7 @@
     .btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(102,126,234,.3)}
     .btn.secondary{background:#2d3748}
     .btn.ghost{background:#fff;color:#4f46e5;border:1px solid #c7d2fe}
+    .btn.danger{background:#dc2626}
     .btn:disabled{background:#cbd5e0;cursor:not-allowed;transform:none;box-shadow:none}
 
     .status{padding:10px 15px;border-radius:8px;margin:12px 0;font-weight:500}
@@ -119,6 +120,8 @@
         <div class="row" style="margin-top:auto;">
           <button class="btn" id="analyzeBtn" disabled onclick="performProfessionalAnalysis()">📊 Professional Analysis</button>
           <button class="btn secondary" id="downloadBtn" disabled onclick="downloadSVG()">💾 Download</button>
+          <button class="btn" id="undoBtn" disabled onclick="undoSvg()">↩️ Undo</button>
+          <button class="btn danger" id="deleteBtn" disabled onclick="deleteSvg()">🗑️ Delete</button>
         </div>
         <div id="status"></div>
       </div>
@@ -156,9 +159,12 @@
         <button class="btn ghost" onclick="quickPrompt('reduce window spacing horizontally by 50%')">tighter spacing</button>
         <button class="btn ghost" onclick="quickPrompt('align windows into 6 columns and 8 rows')">6×8 grid</button>
         <button class="btn ghost" onclick="quickPrompt('alternate every other column with narrow windows')">alternate columns</button>
+        <!-- NEW: undo/delete quick chips -->
+        <button class="btn ghost" onclick="quickPrompt('undo')">↩️ undo</button>
+        <button class="btn ghost" onclick="quickPrompt('delete')">🗑️ delete</button>
       </div>
       <div class="messages" id="msgs">
-        <div class="message bot"><strong>AI Assistant:</strong> Try quick actions above or type things like: "increase window size by 10%", "convert to 5×7 grid", "make all windows square", "add a central atrium void".</div>
+        <div class="message bot"><strong>AI Assistant:</strong> Try quick actions above or type things like: "increase window size by 10%", "convert to 5×7 grid", "make all windows square", "add a central atrium void". You can also type <em>undo</em> to revert or <em>delete</em> to clear and upload a new SVG.</div>
       </div>
       <div class="input">
         <input class="text" id="ask" placeholder="Describe architectural modifications needed..." onkeypress="enterSend(event)"/>
@@ -170,6 +176,44 @@
   <script>
     let svgText = '';
     const ANALYSIS_RESOLUTION = 768;
+
+    // --- NEW: simple SVG history stack ---
+    let svgHistory = [];         // stores serialized SVG strings
+    const HISTORY_LIMIT = 50;
+
+    function resetHistory() { svgHistory = []; updateUndoAvailability(); }
+    function pushHistory(state) {
+      if (!state) return;
+      if (svgHistory.length && svgHistory[svgHistory.length-1] === state) return;
+      svgHistory.push(state);
+      if (svgHistory.length > HISTORY_LIMIT) svgHistory.shift();
+      updateUndoAvailability();
+    }
+    function canUndo() { return svgHistory.length > 1; }
+    function undoSvg() {
+      if (!canUndo()) return;
+      // pop current, revert to previous
+      svgHistory.pop();
+      svgText = svgHistory[svgHistory.length - 1] || '';
+      renderSVG(svgText);
+      addMessage('Reverted to previous SVG.', 'bot');
+      updateUndoAvailability();
+    }
+    function deleteSvg() {
+      svgText = '';
+      resetHistory();
+      enableControls(false);
+      document.getElementById('svgBox').innerHTML = '<em style="color:#a0aec0;">Your SVG will appear here</em>';
+      document.getElementById('svgFile').value = '';
+      document.getElementById('analysisContent').innerHTML =
+        '<div style="text-align:center;color:#718096;padding:40px 20px;">Upload an SVG facade mask to begin professional analysis</div>';
+      addMessage('Cleared the current SVG. You can upload a new file.', 'bot');
+      showToast('SVG deleted. Ready for a new upload.', 'info');
+    }
+    function updateUndoAvailability() {
+      const undoBtn = document.getElementById('undoBtn');
+      if (undoBtn) undoBtn.disabled = !canUndo();
+    }
 
     class AIClient {
       async chat(messages, temperature = 0.2) {
@@ -207,6 +251,9 @@
           svgText = normalized.svgText;
           renderSVG(svgText);
           enableControls(true);
+          // NEW: start fresh history with the uploaded file
+          resetHistory();
+          pushHistory(svgText);
           showToast('SVG uploaded successfully', 'success');
         } catch (error) {
           console.error(error);
@@ -219,6 +266,11 @@
     function renderSVG(svg) {
       const container = document.getElementById('svgBox');
       container.innerHTML = '';
+
+      if (!svg) {
+        container.innerHTML = '<em style="color:#a0aec0;">Your SVG will appear here</em>';
+        return;
+      }
 
       const parser = new DOMParser();
       const doc = parser.parseFromString(svg, 'image/svg+xml');
@@ -305,7 +357,7 @@
       analysisContent.innerHTML = '<div style="text-align:center;padding:40px;"><span class="loading-spinner"></span> <span style="margin-left:10px;">Performing concise analysis...</span></div>';
 
       try {
-        const metrics = await analyzeFacadeMetrics(svgText); // metrics computed here (after click only)
+        const metrics = await analyzeFacadeMetrics(svgText);
         const syntax = inspectSvgSyntax(svgText);
         const analysis = await getAIProfessionalAnalysis(metrics, svgText);
         renderProfessionalAnalysis(metrics, analysis, syntax);
@@ -435,7 +487,7 @@ Rules (VERY IMPORTANT):
         <div class="assessment-section">
           <div class="assessment-header">
             <div class="assessment-icon" style="background:linear-gradient(45deg,#10b981,#059669)">📊</div>
-            <div class="assessment-title">Performance (0–100)</div>
+            <div class="performance-title">Performance (0–100)</div>
           </div>
           <div class="performance-grid">
             ${Object.entries(perf).map(([k,v])=>`
@@ -502,7 +554,6 @@ Rules (VERY IMPORTANT):
       };
     }
 
-    // (Raster method kept for accuracy; executed only during analysis click)
     async function calculateWindowRatio(svg, resolution) {
       const { svgText: fixed, w: vw, h: vh } = await normalizeSvgSize(svg);
       let cw, ch;
@@ -602,6 +653,11 @@ Rules (VERY IMPORTANT):
       addMessage(message, 'user');
       input.value = '';
 
+      // NEW: chat commands: undo / delete
+      const lc = message.toLowerCase();
+      if (lc === 'undo' || lc === 'revert') { undoSvg(); return; }
+      if (lc === 'delete' || lc === 'clear' || lc === 'reset') { deleteSvg(); return; }
+
       if (!svgText) {
         try {
           const response = await ai.chat([{ role: 'user', content: message }]);
@@ -628,7 +684,10 @@ Rules: Edit geometry only (window shapes, sizes, spacing, grid, alignment, group
         const modifiedSVG = extractSVGFromResponse(response);
         if (modifiedSVG && modifiedSVG !== svgText) {
           const normalized = await normalizeSvgRoot(modifiedSVG);
+          // NEW: push previous state, then set new
+          pushHistory(svgText);
           svgText = normalized.svgText;
+          pushHistory(svgText);
           renderSVG(svgText);
           addMessage('Applied successfully. Run Professional Analysis to update metrics.');
         } else {
@@ -661,7 +720,10 @@ Rules: Edit geometry only (window shapes, sizes, spacing, grid, alignment, group
         const modifiedSVG = extractSVGFromResponse(response);
         if (modifiedSVG && modifiedSVG !== svgText) {
           const normalized = await normalizeSvgRoot(modifiedSVG);
+          // NEW: push previous state, then set new
+          pushHistory(svgText);
           svgText = normalized.svgText;
+          pushHistory(svgText);
           renderSVG(svgText);
           addMessage(`Applied "${rec.title}". Run Professional Analysis to update metrics.`);
         } else {
@@ -688,6 +750,8 @@ Rules: Edit geometry only (window shapes, sizes, spacing, grid, alignment, group
     function enableControls(enabled) {
       document.getElementById('analyzeBtn').disabled = !enabled;
       document.getElementById('downloadBtn').disabled = !enabled;
+      document.getElementById('deleteBtn').disabled = !enabled;
+      updateUndoAvailability();
     }
 
     function showToast(message, type = 'success') {
