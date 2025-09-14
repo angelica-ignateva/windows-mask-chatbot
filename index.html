@@ -145,7 +145,7 @@
         <select id="provider" style="width:300px">
           <option value="openai">OpenAI</option>
         </select>
-        <input type="text" id="model" value="gpt-4o" style="width:300px"/>
+        <input type="text" id="model" value="gpt-4" style="width:300px"/>
         <button class="btn" onclick="testConnection()" id="testBtn">Test Connection</button>
         <div id="connectionStatus" style="margin-left:8px;"></div>
       </div>
@@ -220,7 +220,7 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            model: document.getElementById('model').value || 'gpt-4o',
+            model: document.getElementById('model').value || 'gpt-4',
             messages,
             temperature,
             max_tokens: 4000
