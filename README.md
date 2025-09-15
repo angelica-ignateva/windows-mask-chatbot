@@ -3,9 +3,7 @@
 ##Iterate, analyze, improve.
 Use the chatbot to reshape your facade mask in seconds—then run a GPT-powered Professional Analysis to see exactly how each change impacts daylight, rhythm, and thermal comfort. Repeat the loop to quickly converge on a better design.
 
-Option B — benefits first
-
-Design smarter with AI.
+##Design smarter with AI.
 Edit your SVG facade interactively, and after each revision, get an instant, GPT-driven report on window-to-wall ratio, visual rhythm, and performance. Iterate with clear metrics and watch your design measurably improve.
 
 ##From idea to insight—fast.
